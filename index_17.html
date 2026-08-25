@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entremax Tech — Sprint Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#0f0f0e;
+  --ink2:#4a4a48;
+  --ink3:#9a9a97;
+  --paper:#fafaf8;
+  --paper2:#f2f1ee;
+  --paper3:#e8e7e3;
+  --border:#ddddd8;
+  --done-bg:#eaf5e1;
+  --done-text:#2a5c0e;
+  --done-dot:#5db82e;
+  --open-bg:#fff0e8;
+  --open-text:#8a3200;
+  --open-dot:#e85d04;
+  --prog-bg:#e8f0ff;
+  --prog-text:#1a3a8a;
+  --prog-dot:#3b6bef;
+  --yasin:#1a3a8a;
+  --cemil:#0a5c3e;
+  --ugur:#7a2e00;
+  --accent:#e85d04;
+  --radius:6px;
+  --font:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+
+body{font-family:var(--font);background:var(--paper);color:var(--ink);min-height:100vh}
+
+/* ── HEADER ── */
+.site-header{background:var(--ink);color:#fff;padding:0 32px}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-size:15px;font-weight:600;letter-spacing:-.3px;color:#fff;display:flex;align-items:center;gap:8px}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block}
+.header-meta{font-size:12px;color:rgba(255,255,255,.45);font-family:var(--mono)}
+
+/* ── HERO ── */
+.hero{background:var(--ink);color:#fff;padding:48px 32px 40px;border-bottom:1px solid rgba(255,255,255,.08)}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero h1{font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:-.8px;line-height:1.1;margin-bottom:12px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:15px;color:rgba(255,255,255,.55);max-width:520px;line-height:1.6}
+.hero-stats{display:flex;gap:32px;margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1)}
+.stat-item{display:flex;flex-direction:column;gap:3px}
+.stat-num{font-size:26px;font-weight:700;font-family:var(--mono)}
+.stat-label{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.8px}
+
+/* ── NAV ── */
+.nav-wrap{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;height:52px}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{padding:6px 16px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--ink3);border-radius:var(--radius);transition:all .15s;font-family:var(--font)}
+.nav-tab:hover{color:var(--ink);background:var(--paper2)}
+.nav-tab.active{color:var(--ink);background:var(--paper3);font-weight:600}
+.person-pills{display:flex;gap:6px}
+.person-pill{padding:4px 12px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:99px;cursor:pointer;background:var(--paper);color:var(--ink2);transition:all .15s;font-family:var(--font)}
+.person-pill:hover{border-color:var(--ink3)}
+.person-pill.active-Y{background:#e6f1fb;color:var(--yasin);border-color:#b0cff5;font-weight:600}
+.person-pill.active-C{background:#e1f5ee;color:var(--cemil);border-color:#8fd5b8;font-weight:600}
+.person-pill.active-U{background:#faece7;color:var(--ugur);border-color:#f0b08a;font-weight:600}
+.person-pill.active-all{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+
+/* ── MAIN ── */
+.main{max-width:1100px;margin:0 auto;padding:32px}
+.section{display:none}.section.visible{display:block}
+
+/* ── WEEK GRID ── */
+.week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.week-card{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:box-shadow .2s}
+.week-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.week-card.current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.wc-header{padding:12px 16px;background:var(--paper2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.wc-week{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--ink2);background:var(--paper3);padding:2px 7px;border-radius:4px}
+.wc-dates{font-size:11px;color:var(--ink3)}
+.wc-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px}
+.badge-done{background:var(--done-bg);color:var(--done-text)}
+.badge-current{background:var(--accent);color:#fff}
+.badge-open{background:var(--open-bg);color:var(--open-text)}
+.wc-body{padding:12px 16px}
+.person-group{margin-bottom:10px}
+.person-group:last-child{margin-bottom:0}
+.pg-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.pg-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.pg-Y{color:var(--yasin)}
+.pg-C{color:var(--cemil)}
+.pg-U{color:var(--ugur)}
+.task-row{display:flex;align-items:flex-start;gap:7px;padding:3px 0;border-bottom:1px solid var(--paper2)}
+.task-row:last-child{border-bottom:none}
+.task-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.dot-done{background:var(--done-dot)}
+.dot-open{background:var(--open-dot)}
+.dot-prog{background:var(--prog-dot)}
+.task-text{font-size:12px;color:var(--ink2);line-height:1.4}
+.task-text.is-done{color:var(--ink3);text-decoration:line-through}
+.wc-footer{padding:8px 16px;background:var(--paper2);border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--ink3)}
+
+/* ── MONTH VIEW ── */
+.month-section{margin-bottom:40px}
+.month-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.month-title{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.month-status{font-size:10px;font-weight:600;padding:3px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.5px}
+.month-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.month-card{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.month-card.current-month{border-color:var(--accent)}
+.mc-header{padding:10px 14px;background:var(--paper2);border-bottom:1px solid var(--border)}
+.mc-person{font-size:11px;font-weight:600}
+.mc-body{padding:10px 14px}
+
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--ink3);font-size:14px}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{margin-bottom:24px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 20px}
+.progress-label{font-size:12px;color:var(--ink2);margin-bottom:8px;display:flex;justify-content:space-between}
+.progress-bar{height:6px;background:var(--paper3);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--done-dot);border-radius:3px;transition:width .4s}
+.progress-stats{display:flex;gap:20px;margin-top:10px}
+.ps-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2)}
+.ps-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── CURRENT SPRINT BANNER ── */
+.current-banner{background:var(--ink);color:#fff;border-radius:10px;padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.cb-left h2{font-size:16px;font-weight:600;margin-bottom:3px}
+.cb-left p{font-size:12px;color:rgba(255,255,255,.5)}
+.cb-right{display:flex;gap:20px}
+.cb-stat{text-align:center}
+.cb-num{font-size:22px;font-weight:700;font-family:var(--mono)}
+.cb-lbl{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px}
+
+/* ── FOOTER ── */
+.site-footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;font-size:12px;color:var(--ink3);margin-top:48px}
+
+/* ── EDITABLE TASKS ── */
+.status-sel{padding:2px 7px;border:1px solid var(--border);border-radius:99px;font-size:10px;font-family:var(--font);cursor:pointer;outline:none;min-width:100px;margin-right:6px}
+.s-done{background:var(--done-bg);color:var(--done-text);border-color:#97c459}
+.s-not{background:var(--open-bg);color:var(--open-text);border-color:#f09595}
+.s-prog{background:var(--prog-bg);color:var(--prog-text);border-color:#85b7eb}
+.add-row{display:flex;gap:8px;margin:12px 0 4px}
+.add-row input{flex:1;padding:7px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--paper);color:var(--ink);font-size:13px;font-family:var(--font);outline:none}
+.add-row input::placeholder{color:var(--ink3)}
+.add-btn{padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--paper);color:var(--ink);font-size:12px;cursor:pointer;font-family:var(--font);white-space:nowrap}
+.add-btn:hover{background:var(--paper2)}
+.wc-add{padding:10px 16px;border-top:1px solid var(--border);background:var(--paper2)}
+.task-actions{display:flex;gap:4px;flex-shrink:0;opacity:0;transition:opacity .15s}
+.task-row:hover .task-actions{opacity:1}
+.action-btn{background:none;border:none;cursor:pointer;padding:2px 5px;border-radius:4px;font-size:12px;color:var(--ink3);font-family:var(--font)}
+.action-btn:hover{background:var(--paper2);color:var(--ink)}
+.action-btn.del:hover{background:#fff0f0;color:#c0392b}
+.task-input-edit{flex:1;padding:2px 6px;border:1px solid var(--accent);border-radius:4px;font-size:12px;font-family:var(--font);outline:none;background:#fff}
+.wc-add-row{display:flex;gap:6px;padding:8px 12px;background:var(--paper2);border-top:1px solid var(--border)}
+.wc-add-input{flex:1;padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;font-family:var(--font);outline:none;background:#fff}
+.wc-add-input::placeholder{color:var(--ink3)}
+.wc-add-submit{padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;color:var(--ink);font-size:12px;cursor:pointer;font-family:var(--font)}
+.wc-add-submit:hover{background:var(--ink);color:#fff}
+.add-task-btn{padding:4px 10px;border:1px dashed var(--border);border-radius:var(--radius);background:none;color:var(--ink3);font-size:11px;cursor:pointer;font-family:var(--font);width:100%;text-align:left;margin-top:6px}
+.add-task-btn:hover{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo"><span class="logo-dot"></span>Entremax Tech</div>
+    <div class="header-meta" id="last-updated"></div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Sprint <span>Dashboard</span></h1>
+    <p>Weekly sprints and monthly goals for the Entremax engineering & design team — W03 through W34.</p>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num" id="hs-sprints">0</div><div class="stat-label">Sprints</div></div>
+      <div class="stat-item"><div class="stat-num" id="hs-tasks">0</div><div class="stat-label">Weekly Tasks</div></div>
+      <div class="stat-item"><div class="stat-num" id="hs-goals">0</div><div class="stat-label">Monthly Goals</div></div>
+      <div class="stat-item"><div class="stat-num" id="hs-done">0%</div><div class="stat-label">Completed</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-inner">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('weekly')">Weekly Sprints</button>
+      <button class="nav-tab" onclick="switchTab('monthly')">Monthly Goals</button>
+    </div>
+    <div class="person-pills">
+      <button class="person-pill active-all" onclick="setFilter('all')">All</button>
+      <button class="person-pill" onclick="setFilter('Yasin')">Yasin</button>
+      <button class="person-pill" onclick="setFilter('Cemil')">Cemil</button>
+      <button class="person-pill" onclick="setFilter('Ugur')">Ugur</button>
+    </div>
+  </div>
+</div>
+
+<main class="main">
+  <div id="weekly" class="section visible"></div>
+  <div id="monthly" class="section"></div>
+</main>
+
+<footer class="site-footer">
+  Entremax Tech · Sprint Dashboard · Auto-generated from team Slack planning messages
+</footer>
+
+<script>
+const WEEK_DATES={
+  W03:'2025-01-14',W04:'2025-01-21',W05:'2025-01-28',
+  W06:'2025-02-04',W07:'2025-02-11',W08:'2025-02-18',
+  W09:'2025-02-25',W10:'2025-03-04',W11:'2025-03-11',
+  W12:'2025-03-18',W13:'2025-03-25',W14:'2025-04-01',
+  W15:'2025-04-08',W16:'2025-04-15',W17:'2025-04-22',
+  W18:'2025-04-29',W19:'2025-05-06',W20:'2025-05-13',
+  W21:'2025-05-20',W23:'2025-06-03',W24:'2025-06-10',
+  W25:'2025-06-17',W26:'2026-06-24',W27:'2026-07-01',
+  W28:'2026-07-08',W29:'2026-07-15',W30:'2026-07-22',W31:'2026-07-29',
+  W32:'2026-08-05',W33:'2026-08-12',W34:'2026-08-19'
+};
+
+const CURRENT='2026-08-19';
+
+const SLACK=[
+  {w:'W03',p:'Yasin',t:['Smart Campaign – Transaction Screens API Implementation','Smart Campaign – Campaign Creation, Deletion, Edit and Duplicate Screens API Implementation','Sms Marketing Bug Fix','Lead Problems Bug Fix','Tag Management – Bug Fixes']},
+  {w:'W03',p:'Ugur',t:['Listicle – No Conversion Products Update','Adding Required Documentation Structures','Inventory Management – Inventory Screens']},
+  {w:'W03',p:'Cemil',t:['Smart SMS fonksiyonel gelistirme','Parametre ekranlari baglantisi','Store gelistirmesi (Ufuk icin)','Yeni FE onboarding']},
+  {w:'W04',p:'Ugur',t:['Marking Fields in Templates for the Technical Team','Inventory Management – Design System','Inventory Screens – Import Flow','Inventory Screens – Add Item Flow','Inventory Screens – Search & Empty Case Screens','Inventory Screens – On Order Screen']},
+  {w:'W04',p:'Yasin',t:['Smart Campaign – Score Index Implementation','Smart Campaign – Metrics Implementation','Smart Campaign – Schedule Job Implementation','Sms Marketing – Bug Fix']},
+  {w:'W04',p:'Cemil',t:['Manage Offers & DTM onboarding','SMS Module Onboarding','Manage Parameters – Test Deployment','Manage Scores – Test Deployment','Smart SMS Create Screen (>50%)']},
+  {w:'W05',p:'Ugur',t:['Inventory Management – Suppliers','Inventory Management – Side Menu Cases','Inventory Screens – Modals','Inventory Screens – Success & Error Cases','Inventory Management – Design File Structuring','Smart SMS – Update','Create Segment – Update','Listicle – Reports Screen – Custom Date Filter','Schedsmart.ai – Phase 3 – Design Bug List']},
+  {w:'W05',p:'Yasin',t:['Smart Campaign – Metrics Implementation','Smart Campaign – Schedule Job Implementation','Smart Campaign – Creation of Campaign Fixes','LTV – Bug Fixes','Prod Release Bug Fixes']},
+  {w:'W05',p:'Cemil',t:['Article 5 Editor Implementation','Article 5 Store Implementation','Template 41 Store Implementation','Smart SMS – Create Smart SMS UI Implementation','Backlog bug fixes','Oguz – Orientation','Ufuk – New Template Planning','Template 41 Editor Implementation (Ufuk)']},
+  {w:'W06',p:'Ugur',t:['Purchase Orders – Orders Screen','Purchase Orders – Search & Empty State Screens','Purchase Orders – Success & Error States','Purchase Orders – Create PO Flow','Purchase Orders – Orders Screen (Draft View)','Purchase Orders – Orders Screen (Active View)']},
+  {w:'W06',p:'Cemil',t:['Smart Campaigns – Create Transaction ID Connections','Smart Campaigns – Create Flow','Oguz – Technical Onboarding Part 2','Oguz – Bug Fixes','Ufuk – Template Bug Fixes']},
+  {w:'W06',p:'Yasin',t:['Smart Campaign – Metric Implementation','Smart Campaign – Scheduling Mechanism Implementation','Smart Campaign – Collecting Contacts Data from DataSources','Sms Marketing Bug and Tasks']},
+  {w:'W07',p:'Ugur',t:['Listicle – Product Card A/B Testing','Purchase Orders – In Transit (SKU View)','Purchase Orders – In Transit (Calendar View)','Purchase Orders – Completed View']},
+  {w:'W07',p:'Yasin',t:['Sms Marketing Bug and Tasks (continue)','Smart Campaign – Scheduling Mechanism (continue)','Smart Campaign – Collecting Contacts Data (continue)','Inventory Management – Project Analyze']},
+  {w:'W07',p:'Cemil',t:['Template 44 UI Implementation','Smart SMS – Successful Creation','Inventory Management – Project Analyze Start']},
+  {w:'W08',p:'Ugur',t:['Schedsmart.ai – New Design Requests','Cost Analysis – Overview','Purchase Orders – Success & Error States','Purchase Orders – Invoices','Purchase Orders – Items to Order']},
+  {w:'W08',p:'Yasin',t:['Template 44 Creation','Smart Campaign – Integration of Score Index with Scheduling','Inventory Management: Suppliers and Product Analyze','Sms Campaign – Click Feeding & Account Based Click','Sms Marketing – LTV Bugs Continue','Production Deployment','Smart Campaign – Contacts Data (continue)','Inventory Management – Project Analyze Remaining','Sms Marketing Bug and Tasks (continue)']},
+  {w:'W08',p:'Cemil',t:['Template 48 UI','Template 44 Store','Smart SMS List Screen','Smart SMS Searching','Smart SMS Sorting','Smart SMS Deletion']},
+  {w:'W09',p:'Ugur',t:['Inventoryhub.ai – Logo Design','InventoryHub.ai – Design Flow Updates','Inventoryhub.ai – Cost Analysis Alerts & Negotiate','Listicle – Product Card A/B Testing Updates']},
+  {w:'W09',p:'Cemil',t:['Template 46 Store','Template 47 UI','Template 47 Editor','Template 47 Store','Smart Campaign Edit Flow','Smart Campaign Filters','Inventory MGMT Planning 2nd Part']},
+  {w:'W09',p:'Yasin',t:['Template 46 Creation','Prod Deployment','Sms Marketing – LTV Bugs Continue','Sms Campaign – Additional Features','Smart Campaign – Contacts Data (continue)','Sms Marketing Bug and Tasks (continue)','Smart Campaign – Score Index + Scheduling','Inventory Management Planning Continue']},
+  {w:'W10',p:'Ugur',t:['SMS Response – All Response Section Removing','SMS Response – Remove All Reply Details Sections','SMS Response – Add Quick Replies Field','SMS Response – URLs Can be Selectable in Messages','SMS Response – Change Customer ID Filter to Phone Number','SMS Response – Add Reply Details Contact Redirect','SMS Response – Auto-resolve When Replied','Inventoryhub.ai – Plugin Pages']},
+  {w:'W10',p:'Yasin',t:['DNC Compliance Implementation','Sms Campaign – Feed Issues and Account Based Click','Prod Deployment','Microservices New Relic Optimization','LTV Source Update Schedule Job','Inventory – Supplier Implementation','Inventory – User Log Implementation']},
+  {w:'W11',p:'Ugur',t:['SMS Response – Design Test','LTV – Sorting By Columns','LTV – Removing Record Date from Source','LTV – Date Range Changes','LTV – List Expandable Button','DTM – Contact Detail View','Inventoryhub.ai – Inventory Table Update','Schedsmart.ai – Cancel Function for Completed Offers','Schedsmart.ai – Page Listing All Creatives','Schedsmart.ai – Adding Bulk Editor to Offers Page','Listicle – Product Card A/B Testing Updates']},
+  {w:'W11',p:'Yasin',t:['LTV Source Update Schedule Job','Inventory – Supplier Implementation','Inventory – User Log Implementation','SMS Response – Quick Replies Feature','Smart Campaign – Scheduler and Contact Choosing Implementation','Redirect Domain Implementation']},
+  {w:'W11',p:'Cemil',t:['Smart SMS Reopen Items (continue)','Template 40 – Checkout Mode UI','Template 40 – Checkout Mode Responsive UI']},
+  {w:'W12',p:'Ugur',t:['Smart Campaign – Design Test','Independent Transaction ID Creation','SMS Flow – Additional Trigger Type','LTV Layout Update']},
+  {w:'W12',p:'Yasin',t:['Inventory – Supplier Implementation','Inventory – User Log Implementation','Redirect Domain Implementation','Smart Campaign Prod Deployment','Sms Flow – Additional Trigger Types','Sms Flow – Node Analytics']},
+  {w:'W13',p:'Ugur',t:['LTV – New Accordion View','LTV – Rebill & Remarketing View','LTV – Search Flow','LTV – Date Filter Flow','LTV – Advanced Filter Flow','Responses – Rename Add Link Flow to Generate Link','Schedsmart.ai – Show Tags in Manual Offer Selection']},
+  {w:'W13',p:'Yasin',t:['Inventory – Supplier Implementation','Inventory – User Log Implementation','Smart Campaign Prod Deployment','Sms Flow – Additional Trigger Types','Template 40','Template 42']},
+  {w:'W14',p:'Ugur',t:['LPP – Template Editor with PayPal Integration','LPP – Redesign of the Templates Page','Schedsmart – Sub 5']},
+  {w:'W14',p:'Yasin',t:['Template and Template Preview Refactor','LTV Updates and Improvements Analyze','Inventory Management – Product Implementation Analyze']},
+  {w:'W14',p:'Cemil',t:['LTV – Create the Skeleton of the Page','Transaction ID – Add Transaction ID Manager Modal UI']},
+  {w:'W15',p:'Ugur',t:['Inventoryhub.ai – Product Mapping Design','LPP – Settings Page: Managing SMS/MMS Pricing','LPP – Settings Page: Managing Short URL Text Configurations']},
+  {w:'W15',p:'Yasin',t:['Inventory Management – Product Implementation','Sms Flow Bug Fixes and Improvement','Smart Campaign – Bug Fixes','LTV Updates – New Structure (BE)','IM – Product Mapping with Ugur Analyze']},
+  {w:'W15',p:'Cemil',t:['LTV – Footer Component','LTV – Table Design UI Part 1']},
+  {w:'W16',p:'Ugur',t:['LPP – A/B Testing Flow Design','SMS Campaign – Sender Account Visibility']},
+  {w:'W16',p:'Yasin',t:['Inventory Management – Product Implementation Part 2','Smart Campaign/Sms Flow/Tag Management – Bug Fixes','Smart Campaign – Scoring Improvements','LTV Updates – New Structure (continue)']},
+  {w:'W16',p:'Cemil',t:['LTV – General Row Style for Breakdowns','LTV – Date Filter UI','LTV – Search UI']},
+  {w:'W17',p:'Ugur',t:['SMS Campaign – A/B Test Phase 1','LLP – A/B Test Development Diagram']},
+  {w:'W17',p:'Yasin',t:['Sms Flow/Tag Management – Bug Fixes (continue)','Smart Campaign – Scoring Improvements (continue)','LTV Bug Fixes','LPP – A/B Test Analyze']},
+  {w:'W17',p:'Cemil',t:['LTV – List API Backend Connection','LTV – Stats API Backend Connection','LTV – Search','LPP – A/B Test Analyze','Store – Refactor Checkouts']},
+  {w:'W18',p:'Ugur',t:['SMS Campaign – A/B Test Phase 2','LPP – A/B Test Updates','LPP – New Template Desktop','LPP – New Template Mobile','LPP – New Template Documentation']},
+  {w:'W18',p:'Cemil',t:['Store Refactor','A/B Test Planning','Inventory MGMT Planning','LTV – Reopen Issues & Bugs']},
+  {w:'W18',p:'Yasin',t:['A/B Test Planning','Inventory Management Planning','LTV – Reopen Issues & Bugs','Sms Flow Bug Fixes','Smart Campaign – Test and Bug Fixes']},
+  {w:'W19',p:'Cemil',t:['Store Refactor – Implement Changes','A/B Test – Empty Screen','IM – Tailwind & Design System','IM – Button Designs & Component','LTV Fixes']},
+  {w:'W19',p:'Yasin',t:['LTV Fixes','Smart Campaign Test and Deployment','SMS Flow Bug Fixes','AWS Secret Manager Implementation','IM – Product Mapping Analyze and Task Creation']},
+  {w:'W19',p:'Ugur',t:['Schedsmart – Pagination','Schedsmart – Settings: SMS Pricing & Public Page','Schedsmart – View Only Data Access','Listicle – A/B Testing Studio Updates','Listicle – Campaigns – Product Display Limit']},
+  {w:'W20',p:'Ugur',t:['LPP – Template 49 Checkout Desktop','LPP – Template 49 Checkout Mobile','LPP – Template 49 Documentation','LPP – A/B Testing Template Documentation','LPP – Settings – Manage Template Groups','SMS Flow – Updates']},
+  {w:'W20',p:'Cemil',t:['A/B Test – Select Target Page Screen UI','Inventory MGMT – UI Components','Template 49 UI Design']},
+  {w:'W20',p:'Yasin',t:['LTV Fixes (in progress)','SMS Flow Bug Fixes (in progress)','AWS Secret Manager (in progress)','IM – Product Mapping Analyze (in progress)']},
+  {w:'W21',p:'Ugur',t:['Schedsmart – Analytics & Data Visualization','Schedsmart – Offers – Add Tag Filter','LPP – Link Generator','LPP Smart Campaign Min Score & List View','Multi-Product Upsell']},
+  {w:'W21',p:'Yasin',t:['AWS Secret Manager (in progress)','IM – Product Mapping Analyze & Implementation (in progress)','SMMP Issues Fixes','A/B Test Implementation Start']},
+  {w:'W21',p:'Cemil',t:['Inventory MGMT Input Component','Inventory MGMT Select Component','A/B Testing List Screen UI','Template 49 Data Layer & BE Creation','Template 49 Editor Connection','Template 49 Store Connection']},
+  {w:'W23',p:'Cemil',t:['IM – UI Component Developments','LPP – Contact – Location','A/B Test – List Screen UI']},
+  {w:'W23',p:'Yasin',t:['IM – Plugin Implementation','A/B Test – List Screen API','DTM Contact Detail View API','SMMP Bug Fixes']},
+  {w:'W23',p:'Ugur',t:['Template 50 – Documentation','Listicle – Generic Listicle Page (JS Widget)','Listicle – Checkout Page Design']},
+  {w:'W24',p:'Cemil',t:['A/B Test – List API','A/B Test – UI Developments','IM – Plugins List Screen UI','IM – Plugins Add Modal UI']},
+  {w:'W24',p:'Ugur',t:['Listicle – New Listicle Template Design','Listicle – Campaigns – External Website Embed','LPP – Multiple Upsell Module','LPP – Smart SMS Bulk Import (Excel)','LPP – Tag Management: Campaign Selection Improvements']},
+  {w:'W24',p:'Yasin',t:['IM – Purchase Order (Analyze and Task Creation)','A/B Test – AI Implementation for Testing Sequences','LPP – PayPal Integration Analyze and Task Creation']},
+  {w:'W25',p:'Ugur',t:['LPP – New Landing Page Template','LPP – New Landing Page Documentation','LPP – Tag Assignment for Untagged Campaigns & Contacts']},
+  {w:'W25',p:'Yasin',t:['A/B Test – AI Implementation for Testing Sequences','LPP – PayPal Integration Analyze and Task Creation','IM – Creation of PO']},
+  {w:'W25',p:'Cemil',t:['IM – UI Components','IM – Products List UI','A/B Testing – Connect Detail APIs','A/B Testing – Conversion Tracking Analysis with BE']},
+  {w:'W26',p:'Ugur',t:['LPP – Conversion Boosters Module','LPP – Funnel Editor: Add Page Modal','LPP – Funnel Editor: Add Custom Code','LPP – A/B Testing – Updates']},
+  {w:'W26',p:'Cemil',t:['IM – Products List UI','A/B Testing – Conversion Tracking Analysis with BE','Conversion Tracking Implementation']},
+  {w:'W26',p:'Yasin',t:['LPP – PayPal Integration Analyze and Task Creation','A/B Test – Internal Tests','IM – Purchase Order Update, Listing and Deletion Operations','LPP – Schedsmart Integration']},
+  {w:'W27',p:'Ugur',t:['LPP – Design Template 51 Checkout Page','LPP – Document Template 51 Checkout Page','LPP – Smart SMS – Multi-Campaign Click Retargeting','Checkout Funnels Studio – Design New Layout Part 1']},
+  {w:'W27',p:'Yasin',t:['IM – Purchase Order Items and Listing','SMMP/LPP Side Tasks – Analyzing and Task Creation','Creating New Domains and Implementation for LPP and SMMP']},
+  {w:'W27',p:'Cemil',t:['A/B Testing – Impression Tracker System Implementation','IM – Plugins BE Connection']},
+  {w:'W28',p:'Ugur',t:['Checkout Funnels Studio – Design New Layout Part 2','Checkout Funnels Studio – Design Brand Management']},
+  {w:'W28',p:'Cemil',t:['A/B Testing – Ready to be Tested','IM – Ready to be Tested']},
+  {w:'W28',p:'Yasin',t:['A/B Test – Completion of Project','IM – Completion of Phase 1','IM – Reminder Settings Implementation']},
+  {w:'W29',p:'Ugur',t:['Checkout Funnels Studio – Design System','Checkout Funnels Studio – Funnel Builder: Design Part 1']},
+  {w:'W29',p:'Yasin',t:['IM – Purchase Order All Operations','Smart Campaign – Redesign Scoring System','IM and A/B Test Prod Deployment','SMMP Side Tasks and Bug Fixes']},
+  {w:'W29',p:'Cemil',t:['A/B Testing – Bug Fixes','IM – Bug Fixes','IM – Login Screen & Authentication Flow','LPP – Ordering Upsells']},
+  {w:'W30',p:'Yasin',t:['SMMP – Side Tasks','Inventory Hub – Mapping Improvements','Shopify Lead Integration','DNC Litigator API Implementation','SMMP – LPP Lead Exclude for Funnel Id 13688167','Smart Campaign – Multiple Campaign Integration','Checkout Champ Lead Integration (Abandon Cart)']},
+  {w:'W30',p:'Cemil',t:['IM – Suppliers Implementation – Prod Deployment if Tests are Ready','IM – Start for PO UIs']},
+  {w:'W30',p:'Ugur',t:['Checkout Funnels Studio – Funnel Builder: Design Part 2','Checkout Funnels Studio – Design System Part 2']},
+  {w:'W31',p:'Ugur',t:['LPP – Funnel Builder: Layout Update & Data Visualization','LPP – Template Editor: Generate Content with AI','LPP – Manage Offers: Redesign','New Subscription Box Template']},
+  {w:'W31',p:'Cemil',t:['IM – Create Draft PO','IM – Create Real PO','IM – PO List','IM – PO Search','IM – PO Filter (Category)','LPP – Optimize the Build Time']},
+  {w:'W31',p:'Yasin',t:['Shopify Lead Integration (continue)','DNC Litigator API Implementation (done)','SMMP – LPP Lead Exclude for Funnel Id 13688167 (done)','Smart Campaign – Multiple Campaign Integration (done)','Checkout Champ Lead Integration – Abandon Cart (continue)','Smart Campaign – Changes and Improvements (done)','A/B Test – Conversion Bug (done)']},
+  {w:'W32',p:'Cemil',t:['IM – Add Note Flow','IM – Item to Order Flow','LPP – Template 51','LPP – Smart Campaign – Source Name']},
+  {w:'W32',p:'Yasin',t:['Shopify Lead Integration (continue)','Checkout Champ Lead Integration – Abandon Cart (continue)','SMMP – LPP – Twilio Error Code Tracking','SMMP – LPP – Unsubscribe Pool for Email and Phone','LPP – Smart Campaign – Duplicate Campaign API']},
+  {w:'W32',p:'Ugur',t:['LPP – Smart Campaigns – Add a Duplicate Button to Clone a Campaign into a Draft','LPP – Smart Campaigns – Show the Brand Name Next to the Short Code in Campaign List','LPP – Campaign Builder – Allow Adding an Image by URL Instead of Only a Local File Picker','Subscription Box Template – Checkout, Upsell & Thank You Pages','Pushification – Initial Design & Completion']},
+  {w:'W33',p:'Cemil',t:['LPP – Retarget Campaigns','IM – Add Tracking Flow','LPP – New Design of the Template Selection Modal','LPP – Start of the New Design of the Campaign Editor']},
+  {w:'W33',p:'Ugur',t:['LPP – Template Editor: AI Content Generation – Image Upload Enhancement','Pushification – Design System','Pushification – Flows','New Listicle Template','Listicle – Trend Page','Checkout Funnels Studio – Node Documentation']},
+  {w:'W33',p:'Yasin',t:['Checkout Champ Lead Integration – Abandon Cart (continue)','SMMP – LPP – Twilio Error Code Tracking (continue)','SMMP – LPP – Unsubscribe Pool for Email and Phone (continue)']},
+  {w:'W34',p:'Ugur',t:['Subscription Box Template – Documentation','Pushification – Flow List Page','Checkout Funnels Studio – New Editor Part 1','Checkout Funnels Studio – Design System Part 3']},
+  {w:'W34',p:'Cemil',t:['Subscription Box – All Template Designs in UI','LPP – Manage Offers Modal – New Design']},
+  {w:'W34',p:'Yasin',t:['SMMP – LPP – Twilio Error Code Tracking (continue)','SMMP – LPP – Unsubscribe Pool for Email and Phone (continue)','LPP – Subscription Box Integration for New Box Logic']}
+];
+
+const MONTHLY_GOALS=[
+  {m:'2026-02',label:'February 2026',entries:[
+    {p:'Yasin',t:['Smart Campaign – All Screens','Smart Campaign – Metric Calculations API Implementations','Smart Campaign – Side Tasks (ML, Scheduling, OpenSearch Index)','Inventory Management Project Analyze','Template 46, Template 47, Template 48','SMS Marketing – Phase 2 Analyze, Creating Tasks','Sms Marketing Bugs Continue']},
+    {p:'Cemil',t:['Smart SMS Create','Smart SMS List Screen','Smart SMS Update','Inventory MGMT Planning','Oguz – Technical Onboarding','Oguz – Bug Fixes for LPP Tickets','Several Bug Fixes (JIRA)']},
+  ]},
+  {m:'2026-03',label:'March 2026',entries:[
+    {p:'Yasin',t:['Smart SMS Prod Deployment','Redirect Domain Implementation','Segment Category Implementation and Deployment','Sms Marketing P2 – Quick Replies','Sms Marketing P2 – Sms Sent Which Account','Sms Marketing P2 – Sms Flow: Node Analytics','Sms Marketing P2 – Additional Trigger Type','Inventory Management – Suppliers Implementation','Inventory Management – User History Log','Inventory Management – PO Analyze Finish','Template 42 Creation','Template 40 Creation']},
+    {p:'Cemil',t:['Smart SMS Reopen Maddelerin Cozumu','Smart SMS Prod Deployment','SMS Marketing Phase 2 – Quick Replies','Redirect Domain','Segment Category Implementation','SMS Response – URLs Selectable in Messages','SMS Campaign – Sent Which Account','SMS Flow – Node Analytics','SMS Flow – Additional Trigger Type','SMS Response – All Response Section Removing','SMS Response – Reply Details Sections','IM – Project Structure FE','Template 42','Template 40','IM Analysis (Effort Planning)']},
+    {p:'Ugur',t:['LPP Marketing – SMS Response Design Requests','LPP Marketing – LTV Design Requests','LPP DTM – Contact Details Design','LPP Marketing – SMS Campaign Design Requests','LPP Marketing – SMS Flow Design Requests','Inventoryhub.ai – Product Mapping Design','Inventoryhub.ai – Plugin Pages Design','Inventoryhub.ai – Inventory Table Updates Design','Inventoryhub.ai – Inventory Report Page Design','Additional design tasks during the month']},
+  ]},
+  {m:'2026-04',label:'April 2026',entries:[
+    {p:'Yasin',t:['LTV Updates and Improvements','Transaction ID Management Screens','Sms Flow Bug Fixes and Improvement','Template and Template Preview Refactor','Inventory Management – Product Analyze Part-1','A/B Test Analyze with Ugur and Cemil','Design: SMS Campaign – A/B Test Analyze','Design: IM – Product Mapping Analyze']},
+    {p:'Cemil',t:['LTV New Flow','Transaction ID New Flow','A/B Test Analysis (Ugur & Yasin)','Template Store Refactor','SMS Response – Customer ID Filter to Phone Number']},
+    {p:'Ugur',t:['LPP Marketing – SMS Campaign Design (Sending Account, A/B Scenarios)','Inventoryhub.ai – Product Mapping Design','Schedsmart – Analytics & Data Visualization','Schedsmart – Sub 5','LPP – Template Editor with PayPal Integration','LPP – Redesign Templates Page','LPP – Settings Page: SMS/MMS Pricing','LPP – Settings Page: Short URL Text Configurations','LPP – New Template (Desktop Version)','Additional design tasks during the month']},
+  ]},
+  {m:'2026-05',label:'May 2026',entries:[
+    {p:'Yasin',t:['Smart Campaign New Architecture Test and Deployment','Sms Flow Improvements','LTV Fixes',"Alec's Request Developments and Bug Fixes",'A/B Test – Empty Screen','A/B Test – Create Campaign Screen','A/B Test – Select Target Page Screen','A/B Test – Review & Launch Step Screen','A/B Test – Launch Test','AWS Secret Manager Implementation','IM – Product Mapping Implementation']},
+    {p:'Cemil',t:['Store Refactor – Implement Changes','A/B Test – Empty Screen','A/B Test – Create Campaign Screen','A/B Test – Select Target Page Screen','A/B Test – Review & Launch Step Screen','A/B Test – Launch Test','IM | LPP – AWS Secret Manager Implementation','IM – Tailwind & Design System Implementation','IM – Deploy FE Project to Test Link','IM – Button Designs & Component Implementation','LTV Fixes']},
+    {p:'Ugur',t:['LPP – Settings – Manage Template Groups','LPP – A/B Testing – Template Documentation','SMS Flow – Updates','LPP – Link Generator','Schedsmart – Analytics & Data Visualization','Schedsmart – View Only (No Login) – Data Access','Schedsmart – Settings – SMS Pricing','Schedsmart – Pagination','Listicle – A/B Testing Studio – Updates','Additional design tasks during the month']},
+  ]},
+  {m:'2026-06',label:'June 2026',entries:[
+    {p:'Cemil',t:['IM – Products Flow (Add – Update – Delete – List)','A/B Test – List Screen','A/B Test – Global Settings','DTM – Contact Detail View','LPP – Contact – Location','LPP – PayPal Selection']},
+    {p:'Yasin',t:['IM – Plugin Implementation (Phase 1 completed)','IM – Purchase Order (Analyze and Task Creation)','A/B Test – List Screen API','A/B Test – AI Implementation for Testing Sequences','DTM Contact Detail View','LPP – PayPal Integration']},
+    {p:'Ugur',t:['Listicle – Generic Listicle Page (JS Widget)','Listicle – Checkout Page Design','Listicle – New Listicle Template Design','LPP – Tag Management: Campaign Selection Improvements','LPP – Tag Assignment for Untagged Campaigns & Contacts','LPP – Multiple Upsell Module','LPP – Multiple Upsell Documentation','LPP – New Landing Page Template','LPP – New Landing Page Documentation','LPP – Funnel Editor: Add Custom Code','LPP – Funnel Editor: Add Page Modal','LPP – Smart SMS Bulk Import (Excel)','LPP – Conversion Boosters Module']},
+  ]},
+  {m:'2026-07',label:'July 2026',entries:[
+    {p:'Cemil',t:['A/B Test – Ready to be Tested','IM – Phase 1 – Ready to be Tested','Bug Fixes from Test Results of A/B & IM']},
+    {p:'Yasin',t:['A/B Test – Completion of Project','A/B Test and IM Bug Fixes','IM – Reminder Settings Implementation','IM – Integration with Shipment Webhooks (SMMP and LPP)','IM – Purchase Order Completion','SMMP/LPP Side Tasks – Analyzing and Task Creation']},
+    {p:'Ugur',t:['LPP – Smart SMS: Multi-Campaign Click Retargeting','LPP – Design Template 51 Checkout Page','LPP – Document Template 51 Checkout Page','Checkout Funnels Studio – Design New Layout','Checkout Funnels Studio – Design Brand Management','Checkout Funnels Studio – Funnel Builder: Initial Design']},
+  ]},
+  {m:'2026-08',label:'August 2026',entries:[
+    {p:'Cemil',t:['IM – Purchase Order – Add Tracking Flow','IM – Purchase Order – Add Note Flow','IM – Purchase Order – Mark Delivered','IM – Purchase Order – Item to Order Flow','LPP – Template 51','LPP – Retarget Campaigns','LPP – Duplicate Smart Campaigns','LPP – Smart Campaigns – Show the Brand Name Next to the Short Code in Campaign List','LPP – Campaign Builder – Allow Adding an Image by URL Instead of Only a Local File Picker','LPP – Funnel Builder: Layout Update & Data Visualization']},
+    {p:'Yasin',t:['IM – Purchase Orders Bugs while FE Implementation','IM – Purchase Order Item – Undelivered API','LPP – Smart Campaign – Duplicate Campaigns','LPP – Smart Campaigns – Show the Brand Name Next to the Short Code in Campaign List','LPP – Funnel Builder: Layout Update & Data Visualization (Data Statistics)','LPP – Template Editor: Generate Content with AI (Backend Only)','LPP – SMMP – TacticalBox Shopify Lead Integration','LPP – CheckoutChamps Lead Integration (Abandon Cart Tracking)','SMMP/LPP Side Tasks']},
+    {p:'Ugur',t:['Subscription Box Template – Checkout, Upsell & Thank You Pages','Pushification – Initial Design & Completion','LPP – Template Editor: AI Content Generation – Image Upload Enhancement','New Listicle Template','Listicle Trend Page','Checkout Funnels Studio – Node Documentation','Checkout Funnels Studio – New Template Creator Design (Phase 1)']},
+  ]},
+];
+
+const STATUSES=['not completed','in progress','done'];
+const STATUS_KEY='db_statuses_v1';
+const CUSTOM_KEY='db_custom_v1';
+let statuses={};
+let customTasks={};// {wk: [{id,p,t}], ...}
+let customGoals={};// {m: [{id,p,t}], ...}
+try{statuses=JSON.parse(localStorage.getItem(STATUS_KEY)||'{}');}catch(e){}
+try{const d=JSON.parse(localStorage.getItem(CUSTOM_KEY)||'{}');customTasks=d.tasks||{};customGoals=d.goals||{};}catch(e){}
+function saveStatuses(){try{localStorage.setItem(STATUS_KEY,JSON.stringify(statuses));}catch(e){}}
+function saveCustom(){try{localStorage.setItem(CUSTOM_KEY,JSON.stringify({tasks:customTasks,goals:customGoals}));}catch(e){}}
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function taskId(wk,p,t){return wk+'||'+p+'||'+t;}
+function getStatus(wk,p,t){return statuses[taskId(wk,p,t)]||(WEEK_DATES[wk]<CURRENT?'done':'not completed');}
+function setTaskStatus(wk,p,t,s){statuses[taskId(wk,p,t)]=s;saveStatuses();render();}
+
+// Add custom task to a week/person
+function addCustomTask(wk,p,text){
+  if(!text.trim()) return;
+  if(!customTasks[wk]) customTasks[wk]=[];
+  const id=uid();
+  customTasks[wk].push({id,p,t:text.trim()});
+  saveCustom();
+  render();
+}
+
+// Delete a task (custom only — just mark as hidden for Slack tasks)
+const deletedTasks=new Set(JSON.parse(localStorage.getItem('db_deleted')||'[]'));
+function saveDeleted(){localStorage.setItem('db_deleted',JSON.stringify([...deletedTasks]));}
+
+function deleteTask(wk,p,t,isCustom,customId){
+  if(isCustom){
+    customTasks[wk]=(customTasks[wk]||[]).filter(x=>x.id!==customId);
+    saveCustom();
+  } else {
+    deletedTasks.add(taskId(wk,p,t));
+    saveDeleted();
+  }
+  render();
+}
+
+// Edit a task text inline
+function startEdit(el,wk,p,oldText,isCustom,customId){
+  const row=el.closest('.task-row');
+  const textEl=row.querySelector('.task-text');
+  const input=document.createElement('input');
+  input.className='task-input-edit';
+  input.value=oldText;
+  textEl.replaceWith(input);
+  input.focus();
+  input.select();
+  const save=()=>{
+    const newText=input.value.trim()||oldText;
+    if(isCustom){
+      const obj=(customTasks[wk]||[]).find(x=>x.id===customId);
+      if(obj) obj.t=newText;
+      saveCustom();
+    }
+    render();
+  };
+  input.onblur=save;
+  input.onkeydown=e=>{if(e.key==='Enter') input.blur(); if(e.key==='Escape'){input.value=oldText;input.blur();}};
+}
+
+function addCustomGoal(m,p,text){
+  if(!text.trim()) return;
+  if(!customGoals[m]) customGoals[m]=[];
+  customGoals[m].push({id:uid(),p,t:text.trim()});
+  saveCustom();
+  renderMonthly();
+}
+
+function deleteGoal(m,p,t,isCustom,customId){
+  if(isCustom){
+    customGoals[m]=(customGoals[m]||[]).filter(x=>x.id!==customId);
+  } else {
+    deletedTasks.add('goal||'+m+'||'+p+'||'+t);
+    saveDeleted();
+  }
+  saveCustom(); saveDeleted();
+  renderMonthly();
+}
+
+function scls(s){return s==='done'?'s-done':s==='in progress'?'s-prog':'s-not';}
+
+const PERSON_CLS={'Yasin':'pg-Y','Cemil':'pg-C','Ugur':'pg-U'};
+let activeFilter='all';
+let activeTab='weekly';
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function sprintLabel(key){
+  const s=new Date(key+'T00:00:00'),e=new Date(key+'T00:00:00');
+  e.setDate(e.getDate()+6);
+  const f=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  return f(s)+' – '+f(e);
+}
+
+function isDone(sk){ return sk<CURRENT; }
+function isCurrent(sk){ return sk===CURRENT; }
+
+function buildWeeklyData(){
+  const byWeek={};
+  SLACK.forEach(({w,p,t})=>{
+    if(!byWeek[w]) byWeek[w]={};
+    if(!byWeek[w][p]) byWeek[w][p]=[];
+    byWeek[w][p].push(...t);
+  });
+  return byWeek;
+}
+
+function renderWeekly(){
+  const byWeek=buildWeeklyData();
+  const container=document.getElementById('weekly');
+  container.innerHTML='';
+
+  // current sprint banner
+  const curTasks=SLACK.filter(e=>WEEK_DATES[e.w]===CURRENT && (activeFilter==='all'||e.p===activeFilter));
+  const curTotal=curTasks.reduce((s,e)=>s+e.t.length,0);
+  const banner=document.createElement('div');
+  banner.className='current-banner';
+  banner.innerHTML=`
+    <div class="cb-left">
+      <h2>🟠 Current Sprint — W34</h2>
+      <p>${sprintLabel(CURRENT)} &nbsp;·&nbsp; ${activeFilter==='all'?'All team members':activeFilter}</p>
+    </div>
+    <div class="cb-right">
+      <div class="cb-stat"><div class="cb-num">${curTotal}</div><div class="cb-lbl">Tasks</div></div>
+      <div class="cb-stat"><div class="cb-num">${curTasks.length}</div><div class="cb-lbl">Members</div></div>
+    </div>`;
+  container.appendChild(banner);
+
+  // progress bar
+  const allFiltered=SLACK.filter(e=>activeFilter==='all'||e.p===activeFilter);
+  const totalT=allFiltered.reduce((s,e)=>s+e.t.length,0);
+  const doneWeeks=Object.keys(WEEK_DATES).filter(w=>isDone(WEEK_DATES[w]));
+  const doneT=allFiltered.filter(e=>doneWeeks.includes(e.w)).reduce((s,e)=>s+e.t.length,0);
+  const pct=totalT?Math.round(doneT/totalT*100):0;
+
+  const pw=document.createElement('div');
+  pw.className='progress-wrap';
+  pw.innerHTML=`
+    <div class="progress-label"><span>Overall Sprint Progress</span><span><b>${pct}%</b> complete</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-stats">
+      <div class="ps-item"><div class="ps-dot" style="background:var(--done-dot)"></div>${doneT} completed</div>
+      <div class="ps-item"><div class="ps-dot" style="background:var(--open-dot)"></div>${totalT-doneT} remaining</div>
+      <div class="ps-item"><div class="ps-dot" style="background:var(--ink3)"></div>${Object.keys(byWeek).length} sprints total</div>
+    </div>`;
+  container.appendChild(pw);
+
+  // cards — most recent first
+  const grid=document.createElement('div');
+  grid.className='week-grid';
+
+  const sortedWeeks=Object.keys(byWeek).sort((a,b)=>WEEK_DATES[b]>WEEK_DATES[a]?1:-1);
+  sortedWeeks.forEach(wk=>{
+    const sk=WEEK_DATES[wk]||'';
+    const done=isDone(sk), curr=isCurrent(sk);
+
+    // filter persons
+    const persons=Object.keys(byWeek[wk]).filter(p=>activeFilter==='all'||p===activeFilter);
+    if(!persons.length) return;
+
+    const card=document.createElement('div');
+    card.className='week-card'+(curr?' current':'');
+
+    const badgeClass=done?'badge-done':curr?'badge-current':'badge-open';
+    const badgeText=done?'Completed':curr?'Current':'Planned';
+
+    let bodyHTML='';
+    const ORDER=['Yasin','Cemil','Ugur'];
+    const sortedPersons=[...ORDER.filter(p=>persons.includes(p)),...persons.filter(p=>!ORDER.includes(p))];
+    let totalTasks=0;
+
+    sortedPersons.forEach(p=>{
+      const slackTasks=byWeek[wk][p].filter(t=>!deletedTasks.has(taskId(wk,p,t)));
+      const extra=(customTasks[wk]||[]).filter(x=>x.p===p);
+      const allTasks=[...slackTasks.map(t=>({t,isCustom:false})),...extra.map(x=>({t:x.t,isCustom:true,id:x.id}))];
+      totalTasks+=allTasks.length;
+
+      bodyHTML+=`<div class="person-group">
+        <div class="pg-label ${PERSON_CLS[p]||''}">${esc(p)}</div>
+        ${allTasks.map(({t,isCustom,id})=>{
+          const st=isCustom?(statuses['c||'+id]||'not completed'):getStatus(wk,p,t);
+          const dotCls=st==='done'?'dot-done':st==='in progress'?'dot-prog':'dot-open';
+          const sid=isCustom?'c||'+id:taskId(wk,p,t);
+          return `<div class="task-row" style="align-items:center">
+            <div class="task-dot ${dotCls}" style="margin-top:0;flex-shrink:0"></div>
+            <select class="status-sel ${scls(st)}" onchange="statuses['${sid}']=this.value;saveStatuses();render()">
+              ${STATUSES.map(s=>`<option value="${s}"${st===s?' selected':''}>${s}</option>`).join('')}
+            </select>
+            <div class="task-text${st==='done'?' is-done':''}" style="flex:1">${esc(t)}</div>
+            <div class="task-actions">
+              <button class="action-btn" onclick="startEdit(this,'${esc(wk)}','${esc(p)}','${esc(t)}',${isCustom},'${id||''}')" title="Edit">✏️</button>
+              <button class="action-btn del" onclick="deleteTask('${esc(wk)}','${esc(p)}','${esc(t)}',${isCustom},'${id||''}')" title="Delete">🗑</button>
+            </div>
+          </div>`;
+        }).join('')}
+        <button class="add-task-btn" onclick="showAddRow('${esc(wk)}','${esc(p)}',this)">+ Add task for ${esc(p)}</button>
+        <div class="wc-add-row" id="add-row-${esc(wk)}-${esc(p)}" style="display:none">
+          <input class="wc-add-input" placeholder="New task..." id="add-inp-${esc(wk)}-${esc(p)}">
+          <button class="wc-add-submit" onclick="addCustomTask('${esc(wk)}','${esc(p)}',document.getElementById('add-inp-${esc(wk)}-${esc(p)}').value)">Add</button>
+        </div>
+      </div>`;
+    });
+
+    card.innerHTML=`
+      <div class="wc-header">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="wc-week">${wk}</span>
+          <span class="wc-dates">${sprintLabel(sk)}</span>
+        </div>
+        <span class="wc-badge ${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="wc-body">${bodyHTML}</div>
+      <div class="wc-footer">
+        <span>${sortedPersons.length} member${sortedPersons.length>1?'s':''}</span>
+        <span>${totalTasks} tasks</span>
+      </div>`;
+    grid.appendChild(card);
+  });
+  container.appendChild(grid);
+}
+
+function renderMonthly(){
+  const container=document.getElementById('monthly');
+  container.innerHTML='';
+  const CURRENT_MONTH='2026-07';
+
+  MONTHLY_GOALS.slice().reverse().forEach(({m,label,entries})=>{
+    const isDoneMonth=m<CURRENT_MONTH;
+    const isCurrentMonth=m===CURRENT_MONTH;
+    const filtered=entries.filter(e=>activeFilter==='all'||e.p===activeFilter);
+    if(!filtered.length) return;
+
+    const sec=document.createElement('div');
+    sec.className='month-section';
+
+    const badgeClass=isDoneMonth?'badge-done':isCurrentMonth?'badge-current':'badge-open';
+    const badgeText=isDoneMonth?'Completed':isCurrentMonth?'Current Month':'Planned';
+
+    sec.innerHTML=`<div class="month-header">
+      <div class="month-title">${label}</div>
+      <span class="wc-badge ${badgeClass}">${badgeText}</span>
+    </div>`;
+
+    const grid=document.createElement('div');
+    grid.className='month-grid';
+
+    const ORDER=['Yasin','Cemil','Ugur'];
+    const sortedEntries=[...ORDER.filter(p=>filtered.find(e=>e.p===p)).map(p=>filtered.find(e=>e.p===p)),...filtered.filter(e=>!ORDER.includes(e.p))].filter(Boolean);
+
+    sortedEntries.forEach(({p,t})=>{
+      const card=document.createElement('div');
+      card.className='month-card'+(isCurrentMonth?' current-month':'');
+      const extraGoals=(customGoals[m]||[]).filter(x=>x.p===p);
+      const allGoals=[...t.filter(task=>!deletedTasks.has('goal||'+m+'||'+p+'||'+task)).map(task=>({task,isCustom:false})),...extraGoals.map(x=>({task:x.t,isCustom:true,id:x.id}))];
+      card.innerHTML=`
+        <div class="mc-header"><div class="mc-person ${PERSON_CLS[p]||''} pg-label" style="margin-bottom:0">${esc(p)}</div></div>
+        <div class="mc-body">
+          ${allGoals.map(({task,isCustom,id})=>{
+            const gid=isCustom?'c||'+id:'goal||'+m+'||'+p+'||'+task;
+            const st=statuses[gid]||(isDoneMonth?'done':'not completed');
+            return `<div class="task-row" style="align-items:center">
+              <div class="task-dot ${st==='done'?'dot-done':st==='in progress'?'dot-prog':'dot-open'}" style="margin-top:0;flex-shrink:0"></div>
+              <select class="status-sel ${scls(st)}" onchange="statuses['${gid}']=this.value;saveStatuses();renderMonthly()">
+                ${STATUSES.map(s=>`<option value="${s}"${st===s?' selected':''}>${s}</option>`).join('')}
+              </select>
+              <div class="task-text${st==='done'?' is-done':''}" style="flex:1">${esc(task)}</div>
+              <div class="task-actions">
+                <button class="action-btn del" onclick="deleteGoal('${esc(m)}','${esc(p)}','${esc(task)}',${isCustom},'${id||''}')" title="Delete">🗑</button>
+              </div>
+            </div>`;
+          }).join('')}
+          <button class="add-task-btn" onclick="this.nextElementSibling.style.display='flex'">+ Add goal for ${esc(p)}</button>
+          <div class="wc-add-row" style="display:none">
+            <input class="wc-add-input" placeholder="New goal..." onkeydown="if(event.key==='Enter')addCustomGoal('${esc(m)}','${esc(p)}',this.value)">
+            <button class="wc-add-submit" onclick="addCustomGoal('${esc(m)}','${esc(p)}',this.previousElementSibling.value)">Add</button>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    sec.appendChild(grid);
+    container.appendChild(sec);
+  });
+}
+
+function showAddRow(wk,p,btn){
+  const rowId='add-row-'+wk+'-'+p;
+  const row=document.getElementById(rowId);
+  if(row){row.style.display=row.style.display==='none'?'flex':'none';}
+}
+
+function render(){
+  renderWeekly();
+  renderMonthly();
+  updateHeroStats();
+}
+
+function updateHeroStats(){
+  const allFiltered=SLACK.filter(e=>activeFilter==='all'||e.p===activeFilter);
+  const total=allFiltered.reduce((s,e)=>s+e.t.length,0);
+  const doneWeeks=Object.keys(WEEK_DATES).filter(w=>isDone(WEEK_DATES[w]));
+  const done=allFiltered.filter(e=>doneWeeks.includes(e.w)).reduce((s,e)=>s+e.t.length,0);
+  const pct=total?Math.round(done/total*100):0;
+  const totalGoals=MONTHLY_GOALS.reduce((s,m)=>s+m.entries.filter(e=>activeFilter==='all'||e.p===activeFilter).reduce((ss,e)=>ss+e.t.length,0),0);
+  document.getElementById('hs-sprints').textContent=Object.keys(WEEK_DATES).length;
+  document.getElementById('hs-tasks').textContent=total;
+  document.getElementById('hs-goals').textContent=totalGoals;
+  document.getElementById('hs-done').textContent=pct+'%';
+}
+
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['weekly','monthly'][i]===tab));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById(tab).classList.add('visible');
+}
+
+function setFilter(p){
+  activeFilter=p;
+  document.querySelectorAll('.person-pill').forEach(b=>{
+    b.className='person-pill';
+    if(b.textContent===p||(p==='all'&&b.textContent==='All')){
+      b.className='person-pill active-'+(p==='all'?'all':p[0]);
+    }
+  });
+  render();
+}
+
+// last updated
+document.getElementById('last-updated').textContent='Updated '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+render();
+</script>
+</body>
+</html>
